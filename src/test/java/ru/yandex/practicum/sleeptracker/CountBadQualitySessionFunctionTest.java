@@ -12,7 +12,7 @@ class CountBadQualitySessionFunctionTest {
     private final CountBadQualitySessionFunction function = new CountBadQualitySessionFunction();
 
     @Test
-    void CountBadQualitySessionFunctionTest() {
+    void countBadQualitySessionFunctionTest() {
         try {
             List<SleepingSession> sleepingSessions = new ArrayList<>();
             sleepingSessions.add(new SleepingSession("01.10.25 23:00;02.10.25 00:00;GOOD"));
@@ -31,7 +31,7 @@ class CountBadQualitySessionFunctionTest {
     }
 
     @Test
-    void CountBadQualitySessionFunctionTestIsZero() {
+    void countBadQualitySessionFunctionTestIsZero() {
         List<SleepingSession> sleepingSessions = new ArrayList<>();
         SleepAnalysisResult result = function.apply(sleepingSessions);
         assertNotNull(result, "Результат не должен быть null");

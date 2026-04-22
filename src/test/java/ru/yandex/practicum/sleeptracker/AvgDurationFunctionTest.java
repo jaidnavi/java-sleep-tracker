@@ -13,7 +13,7 @@ class AvgDurationFunctionTest {
     private final AvgDurationFunction function = new AvgDurationFunction();
 
     @Test
-    void AvgDurationFunctionTest() {
+    void avgDurationFunctionTest() {
         try {
             List<SleepingSession> sleepingSessions = new ArrayList<>();
             sleepingSessions.add(new SleepingSession("01.10.25 23:00;02.10.25 00:00;GOOD"));
@@ -32,7 +32,7 @@ class AvgDurationFunctionTest {
     }
 
     @Test
-    void AvgDurationFunctionTestIsZero() {
+    void avgDurationFunctionTestIsZero() {
         List<SleepingSession> sleepingSessions = new ArrayList<>();
         SleepAnalysisResult result = function.apply(sleepingSessions);
         assertNotNull(result, "Результат не должен быть null");

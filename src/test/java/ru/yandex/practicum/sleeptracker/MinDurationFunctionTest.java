@@ -11,7 +11,7 @@ class MinDurationFunctionTest {
     private final MinDurationFunction function = new MinDurationFunction();
 
     @Test
-    void MinDurationFunctionTestTest() {
+    void minDurationFunctionTestTest() {
         try {
             List<SleepingSession> sleepingSessions = new ArrayList<>();
             sleepingSessions.add(new SleepingSession("01.10.25 23:00;02.10.25 01:30;GOOD"));
@@ -30,7 +30,7 @@ class MinDurationFunctionTest {
     }
 
     @Test
-    void MinDurationFunctionTestIsZero() {
+    void minDurationFunctionTestIsZero() {
         List<SleepingSession> sleepingSessions = new ArrayList<>();
         SleepAnalysisResult result = function.apply(sleepingSessions);
         assertNotNull(result, "Результат не должен быть null");

@@ -12,7 +12,7 @@ class CalculateChronotypeFunctionTest {
     private final CalculateChronotypeFunction function = new CalculateChronotypeFunction();
 
     @Test
-    void CalculateChronotypeFunctionDoveIsDove() {
+    void calculateChronotypeFunctionDoveIsDove() {
         try {
             List<SleepingSession> sleepingSessions = new ArrayList<>();
             sleepingSessions.add(new SleepingSession("01.10.25 23:00;02.10.25 00:00;GOOD")); //Голубь
@@ -35,7 +35,7 @@ class CalculateChronotypeFunctionTest {
     }
 
     @Test
-    void CalculateChronotypeFunctionOwlIsOwl() {
+    void calculateChronotypeFunctionOwlIsOwl() {
         try {
             List<SleepingSession> sleepingSessions = new ArrayList<>();
             sleepingSessions.add(new SleepingSession("01.10.25 23:01;02.10.25 09:01;GOOD"));  //Сова
@@ -58,7 +58,7 @@ class CalculateChronotypeFunctionTest {
     }
 
     @Test
-    void CalculateChronotypeFunctionLarkIsLark() {
+    void calculateChronotypeFunctionLarkIsLark() {
         try {
             List<SleepingSession> sleepingSessions = new ArrayList<>();
             sleepingSessions.add(new SleepingSession("01.10.25 21:59;02.10.25 06:59;GOOD")); //Жаворонок
@@ -81,7 +81,7 @@ class CalculateChronotypeFunctionTest {
     }
 
     @Test
-    void CalculateChronotypeFunctionOwlLarkIsDove() {
+    void calculateChronotypeFunctionOwlLarkIsDove() {
         try {
             List<SleepingSession> sleepingSessions = new ArrayList<>();
             sleepingSessions.add(new SleepingSession("01.10.25 21:59;02.10.25 06:59;GOOD")); //Жаворонок
@@ -106,7 +106,7 @@ class CalculateChronotypeFunctionTest {
     }
 
     @Test
-    void CalculateChronotypeFunctionNullIsDove() {
+    void calculateChronotypeFunctionNullIsDove() {
         List<SleepingSession> sleepingSessions = new ArrayList<>();
         SleepAnalysisResult result = function.apply(sleepingSessions);
         assertNotNull(result, "Результат не должен быть null");

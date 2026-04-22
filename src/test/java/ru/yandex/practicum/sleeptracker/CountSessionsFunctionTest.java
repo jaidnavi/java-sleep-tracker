@@ -12,7 +12,7 @@ class CountSessionsFunctionTest {
     private final CountSessionsFunction function = new CountSessionsFunction();
 
     @Test
-    void CountSessionsFunctionTest() {
+    void countSessionsFunctionTest() {
         try {
             List<SleepingSession> sleepingSessions = new ArrayList<>();
             sleepingSessions.add(new SleepingSession("01.10.25 23:15;02.10.25 07:30;GOOD"));
@@ -31,7 +31,7 @@ class CountSessionsFunctionTest {
     }
 
     @Test
-    void CountSessionsFunctionTestIsZero() {
+    void countSessionsFunctionTestIsZero() {
         List<SleepingSession> sleepingSessions = new ArrayList<>();
         SleepAnalysisResult result = function.apply(sleepingSessions);
         assertNotNull(result, "Результат не должен быть null");

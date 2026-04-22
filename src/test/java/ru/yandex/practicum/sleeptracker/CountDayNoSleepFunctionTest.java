@@ -12,7 +12,7 @@ class CountDayNoSleepFunctionTest {
     private final CountDayNoSleepFunction function = new CountDayNoSleepFunction();
 
     @Test
-    void CountDayNoSleepFunctionTestStartAfterNoon() {
+    void countDayNoSleepFunctionTestStartAfterNoon() {
         try {
             List<SleepingSession> sleepingSessions = new ArrayList<>();
             sleepingSessions.add(new SleepingSession("01.10.25 23:15;02.10.25 07:30;GOOD"));
@@ -32,7 +32,7 @@ class CountDayNoSleepFunctionTest {
     }
 
     @Test
-    void CountDayNoSleepFunctionTestStartBeforeNoon() {
+    void countDayNoSleepFunctionTestStartBeforeNoon() {
         try {
             List<SleepingSession> sleepingSessions = new ArrayList<>();
             sleepingSessions.add(new SleepingSession("01.10.25 10:15;02.10.25 07:30;GOOD"));
@@ -52,7 +52,7 @@ class CountDayNoSleepFunctionTest {
     }
 
     @Test
-    void CountDayNoSleepFunctionIsZero() {
+    void countDayNoSleepFunctionIsZero() {
         List<SleepingSession> sleepingSessions = new ArrayList<>();
         SleepAnalysisResult result = function.apply(sleepingSessions);
         assertNotNull(result, "Результат не должен быть null");
