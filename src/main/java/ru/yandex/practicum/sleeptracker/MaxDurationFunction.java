@@ -16,7 +16,7 @@ public class MaxDurationFunction implements Function<List<SleepingSession>, Slee
                 .max(Comparator.comparing(Duration::toMinutes))
                 .orElse(Duration.ofMinutes(0));
 
-        return new SleepAnalysisResult("Максимальная продолжительность сессии (в минутах): ",
+        return new SleepAnalysisResult("Максимальная продолжительность сессии (в минутах)",
                 String.valueOf(maxMinutes.toMinutes()));
     }
 }

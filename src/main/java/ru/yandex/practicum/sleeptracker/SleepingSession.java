@@ -36,6 +36,26 @@ public class SleepingSession {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SleepingSession that = (SleepingSession) o;
+
+        if (startSession != null ? !startSession.equals(that.startSession) : that.startSession != null) return false;
+        if (endSession != null ? !endSession.equals(that.endSession) : that.endSession != null) return false;
+        return sleepQuality == that.sleepQuality;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = startSession != null ? startSession.hashCode() : 0;
+        result = 31 * result + (endSession != null ? endSession.hashCode() : 0);
+        result = 31 * result + (sleepQuality != null ? sleepQuality.hashCode() : 0);
+        return result;
+    }
+
     public LocalDateTime getStartSession() {
         return startSession;
     }
@@ -47,5 +67,6 @@ public class SleepingSession {
     public SleepQuality getSleepQuality() {
         return sleepQuality;
     }
+
 
 }

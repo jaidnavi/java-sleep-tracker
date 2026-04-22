@@ -7,10 +7,9 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.io.IOException;
 import java.io.BufferedReader;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.time.format.DateTimeFormatter;
-import java.time.Duration;
 import java.util.function.Function;
 import java.util.ArrayList;
 
@@ -44,14 +43,19 @@ public class SleepTrackerApp {
             List<SleepingSession> sleepingSessions;
 
             try (BufferedReader br = new BufferedReader(new FileReader(logFilePath.toFile(), StandardCharsets.UTF_8))) {
-                sleepingSessions = br.lines().filter(line -> !line.isBlank()).map(line -> {
-                    try {
-                        return new SleepingSession(line);
-                    } catch (SleepSessionErrors exception) {
-                        System.out.println(exception.getMessage());
-                        return null;
-                    }
-                }).filter(Objects::nonNull).toList();
+                sleepingSessions = br.lines()
+                        .filter(line -> !line.isBlank())
+                        .map(line -> {
+                            try {
+                                return new SleepingSession(line);
+                            } catch (SleepSessionErrors exception) {
+                                System.out.println(exception.getMessage());
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
+                        .sorted(Comparator.comparing(SleepingSession::getStartSession))
+                        .toList();
             } catch (IOException e) {
                 throw new ReadSleepLogError("Ошибка при чтении файла лога сна: " + e.getMessage());
             }
@@ -64,6 +68,9 @@ public class SleepTrackerApp {
             analyticsFunctions.add(new MinDurationFunction());
             analyticsFunctions.add(new MaxDurationFunction());
             analyticsFunctions.add(new AvgDurationFunction());
+            analyticsFunctions.add(new CountBadQualitySessionFunction());
+            analyticsFunctions.add(new CountDayNoSleepFunction());
+            analyticsFunctions.add(new CalculateChronotypeFunction());
 
             analyticsFunctions.stream()
                     .map(function -> function.apply(sleepingSessions)) // Выполняем расчёт

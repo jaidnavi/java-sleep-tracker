@@ -16,7 +16,7 @@ public class MinDurationFunction implements Function<List<SleepingSession>, Slee
                 .min(Comparator.comparing(Duration::toMinutes))
                 .orElse(Duration.ofMinutes(0));
 
-        return new SleepAnalysisResult("Минимальная продолжительность сессии (в минутах): ",
+        return new SleepAnalysisResult("Минимальная продолжительность сессии (в минутах)",
                 String.valueOf(minMinutes.toMinutes()));
     }
 }

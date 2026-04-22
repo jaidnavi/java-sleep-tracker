@@ -9,6 +9,10 @@ public class SleepAnalysisResult {
         this.analyseResult = analyseResult;
     }
 
+    public String getAnalyseResult(){
+        return analyseResult;
+    }
+
     @Override
     public String toString() {
         return analyseText + ": " + analyseResult;
