@@ -8,15 +8,7 @@ public class CalculateChronotypeFunction implements Function<List<SleepingSessio
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
 
-        List<SleepingSession> nightSessions = sessions.stream()
-                .filter(session -> (
-                                (!session.getStartSession().toLocalDate().equals(session.getEndSession().toLocalDate())) ||
-                                        (session.getStartSession().toLocalDate().equals(session.getEndSession().toLocalDate()) &&
-                                                (session.getStartSession().toLocalTime().isBefore(LocalTime.MIDNIGHT.plusHours(6))))
-
-                        )
-                )
-                .toList();
+        List<SleepingSession> nightSessions = SleepingSession.getNightSessions(sessions);
 
         List<SleepingSession> nightSessionsOwl = nightSessions.stream()
                 .filter(session -> (session.getStartSession().toLocalTime().isAfter(LocalTime.MIDNIGHT.plusHours(23)) ||

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 public class SleepTrackerAppTest {
     @Test
     void mainTestRunNoCrash() {
-        SleepTrackerApp.main(new String[]{"C:\\Users\\roman\\dev\\java-sleep-tracker\\src\\main\\resources"});
+        SleepTrackerApp.main(new String[]{System.getProperty("user.dir") + "\\src\\main\\resources"});
     }
 
     @Test

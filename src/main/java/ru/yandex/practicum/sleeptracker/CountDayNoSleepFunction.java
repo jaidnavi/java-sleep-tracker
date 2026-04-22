@@ -11,6 +11,13 @@ public class CountDayNoSleepFunction implements Function<List<SleepingSession>, 
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
 
+        if (sessions.isEmpty()) {
+            return new SleepAnalysisResult(
+                    "Количество ночей без сна",
+                    String.valueOf(0)
+            );
+        }
+
         LocalDateTime firstStart = sessions.get(0).getStartSession();
         LocalDateTime lastEnd = sessions.get(sessions.size() - 1).getEndSession().toLocalDate().atStartOfDay();
 
@@ -26,14 +33,9 @@ public class CountDayNoSleepFunction implements Function<List<SleepingSession>, 
         Duration period = Duration.between(firstStartDate, lastEnd);
         long allDays = period.toDays();
 
-        long countNightSessions = sessions.stream()
-                .filter(session -> (
-                                (!session.getStartSession().toLocalDate().equals(session.getEndSession().toLocalDate())) ||
-                                        (session.getStartSession().toLocalDate().equals(session.getEndSession().toLocalDate()) &&
-                                                (session.getStartSession().toLocalTime().isBefore(LocalTime.MIDNIGHT.plusHours(6))))
+        List<SleepingSession> nightSessions = SleepingSession.getNightSessions(sessions);
 
-                        )
-                )
+        long countNightSessions = nightSessions.stream()
                 .map(session -> session.getStartSession().toLocalDate())
                 .distinct()
                 .count();

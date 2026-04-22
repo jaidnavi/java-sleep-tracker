@@ -9,7 +9,7 @@ public class SleepAnalysisResult {
         this.analyseResult = analyseResult;
     }
 
-    public String getAnalyseResult(){
+    public String getAnalyseResult() {
         return analyseResult;
     }
 

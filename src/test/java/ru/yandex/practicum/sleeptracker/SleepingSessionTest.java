@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 class SleepingSessionTest {
 
@@ -13,7 +15,7 @@ class SleepingSessionTest {
         try {
             SleepingSession sessionOne = new SleepingSession("01.10.25 23:15;02.10.25 07:30;GOOD");
         } catch (SleepSessionErrors exception) {
-            fail("Не должно возникать исключений");
+            fail("Не должно возникать исключений, строка корректна");
         }
     }
 
@@ -21,16 +23,34 @@ class SleepingSessionTest {
     void tryCreateNullSleepingSession() {
         try {
             SleepingSession sessionOne = new SleepingSession("");
-            fail("Должно возникнуть SleepSessionErrors исключение");
+            fail("Должно возникнуть SleepSessionErrors исключение, строка пуста");
         } catch (SleepSessionErrors ignored) {
         }
     }
 
     @Test
-    void tryCreateErrSleepingSession() {
+    void tryCreateErrSleepingSessionString() {
         try {
             SleepingSession sessionOne = new SleepingSession("01.10.25 23:15;02.10.25 07:30;!!!!");
-            fail("Должно возникнуть SleepSessionErrors исключение");
+            fail("Должно возникнуть SleepSessionErrors исключение, строка недопустимого формата");
+        } catch (SleepSessionErrors ignored) {
+        }
+    }
+
+    @Test
+    void tryCreateErrSleepingSessionOverflow24() {
+        try {
+            SleepingSession sessionOne = new SleepingSession("01.10.25 23:15;03.10.25 07:30;GOOD");
+            fail("Должно возникнуть SleepSessionErrors исключение, сон более 24 часов");
+        } catch (SleepSessionErrors ignored) {
+        }
+    }
+
+    @Test
+    void tryCreateErrSleepingSessionRevert() {
+        try {
+            SleepingSession sessionOne = new SleepingSession("01.10.25 00:01;01.10.25 00:00;GOOD");
+            fail("Должно возникнуть SleepSessionErrors исключение, пробуждение раньше засыпания");
         } catch (SleepSessionErrors ignored) {
         }
     }
@@ -77,6 +97,7 @@ class SleepingSessionTest {
         }
     }
 
+
     @Test
     void getSleepQualityCorrect() {
         try {
@@ -96,4 +117,32 @@ class SleepingSessionTest {
             fail("Не должно возникать исключений");
         }
     }
+
+    @Test
+    void getNightSessionsTest() {
+        try {
+            List<SleepingSession> sleepingSessions = new ArrayList<>();
+            sleepingSessions.add(new SleepingSession("30.09.25 20:00;30.09.25 22:00;BAD"));
+            sleepingSessions.add(new SleepingSession("01.10.25 23:00;02.10.25 00:00;GOOD"));
+            sleepingSessions.add(new SleepingSession("02.10.25 23:00;03.10.25 00:01;GOOD"));
+            sleepingSessions.add(new SleepingSession("04.10.25 00:00;04.10.25 00:01;GOOD"));
+            sleepingSessions.add(new SleepingSession("05.10.25 00:01;05.10.25 00:02;GOOD"));
+            sleepingSessions.add(new SleepingSession("05.10.25 05:59;05.10.25 06:00;GOOD"));
+            sleepingSessions.add(new SleepingSession("06.10.25 05:59;06.10.25 06:01;GOOD"));
+            sleepingSessions.add(new SleepingSession("07.10.25 06:01;07.10.25 06:02;BAD"));
+            sleepingSessions.add(new SleepingSession("08.10.25 06:01;08.10.25 23:59;BAD"));
+
+            List<SleepingSession> nightSessions = SleepingSession.getNightSessions(sleepingSessions);
+
+            for (SleepingSession session : nightSessions) {
+                assertEquals(SleepQuality.GOOD, session.getSleepQuality(), "Среди отобранных есть не ночные сессии:" + session.getStartSession() + " - " + session.getEndSession());
+            }
+
+            assertEquals(6, nightSessions.size(), "Количество ночных сессий должно быть 6");
+
+        } catch (SleepSessionErrors exception) {
+            fail("Не должно возникать исключений");
+        }
+    }
+
 }
