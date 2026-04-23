@@ -5,33 +5,46 @@ import java.util.List;
 import java.util.function.Function;
 
 public class CalculateChronotypeFunction implements Function<List<SleepingSession>, SleepAnalysisResult> {
-    @Override
-    public SleepAnalysisResult apply(List<SleepingSession> sessions) {
 
-        List<SleepingSession> nightSessions = SleepingSession.getNightSessions(sessions);
+    private static final int OWL_SLEEP_TIME = 23;     // время засыпания для Сов
+    private static final int OWL_AWAKENING_TIME = 9;  // время пробуждения для Сов
+    private static final int LARK_SLEEP_TIME = 22;    // время засыпания для Жаворонков
+    private static final int LARK_AWAKENING_TIME = 7; // время пробуждения для Жаворонков
+    private static final int FINAL_NIGHT_TIME = 6;    // время окончания ночи
 
-        List<SleepingSession> nightSessionsOwl = nightSessions.stream()
-                .filter(session -> (session.getStartSession().toLocalTime().isAfter(LocalTime.MIDNIGHT.plusHours(23)) ||
-                        session.getStartSession().toLocalTime().isBefore(LocalTime.MIDNIGHT.plusHours(6)))
+    private List<SleepingSession> getSessionsOwl(List<SleepingSession> sessions) {
+        // «Сова» — если время засыпания было после 23:00 (либо ночью, до 6 утра - в ночное время), а время пробуждения — после 9:00
+        return sessions.stream()
+                .filter(session -> (session.getStartSession().toLocalTime().isAfter(LocalTime.MIDNIGHT.plusHours(OWL_SLEEP_TIME)) ||
+                        session.getStartSession().toLocalTime().isBefore(LocalTime.MIDNIGHT.plusHours(FINAL_NIGHT_TIME)))
                 )
-                .filter(session -> (session.getEndSession().toLocalTime().isAfter(LocalTime.MIDNIGHT.plusHours(9)))
+                .filter(session -> (session.getEndSession().toLocalTime().isAfter(LocalTime.MIDNIGHT.plusHours(OWL_AWAKENING_TIME)))
                 )
                 .toList();
+    }
 
-        List<SleepingSession> nightSessionsLark = nightSessions.stream()
-                .filter(session -> (session.getStartSession().toLocalTime().isBefore(LocalTime.MIDNIGHT.plusHours(22)) &&
-                                session.getStartSession().toLocalTime().isAfter(LocalTime.MIDNIGHT.plusHours(6))
+    private List<SleepingSession> getSessionsLark(List<SleepingSession> sessions) {
+        // «Жаворонок» — если время засыпания было до 22:00 (но не в прошлую ночь, до 6 утра), а время пробуждения до — 7:00.
+        return sessions.stream()
+                .filter(session -> (session.getStartSession().toLocalTime().isBefore(LocalTime.MIDNIGHT.plusHours(LARK_SLEEP_TIME)) &&
+                                session.getStartSession().toLocalTime().isAfter(LocalTime.MIDNIGHT.plusHours(FINAL_NIGHT_TIME))
                         )
                 )
-                .filter(session -> (session.getEndSession().toLocalTime().isBefore(LocalTime.MIDNIGHT.plusHours(7)))
+                .filter(session -> (session.getEndSession().toLocalTime().isBefore(LocalTime.MIDNIGHT.plusHours(LARK_AWAKENING_TIME)))
                 )
                 .toList();
+    }
 
-        List<SleepingSession> nightSessionsDove = nightSessions.stream()
+    private List<SleepingSession> getSessionsDove(List<SleepingSession> nightSessions, List<SleepingSession> nightSessionsOwl, List<SleepingSession> nightSessionsLark) {
+        return nightSessions.stream()
                 .filter(session -> !nightSessionsLark.contains(session))
                 .filter(session -> !nightSessionsOwl.contains(session))
                 .toList();
+    }
 
+    private Chronotype getChronotype(List<SleepingSession> nightSessionsOwl,
+                                     List<SleepingSession> nightSessionsLark,
+                                     List<SleepingSession> nightSessionsDove) {
         long countOwlSession = nightSessionsOwl.stream()
                 .map(session -> session.getStartSession().toLocalDate())
                 .distinct()
@@ -49,15 +62,23 @@ public class CalculateChronotypeFunction implements Function<List<SleepingSessio
 
         long maxCount = Math.max(Math.max(countOwlSession, countLarkSession), countDoveSession);
 
-        String chronotype;
         if (maxCount == countOwlSession && countOwlSession != countLarkSession) {
-            chronotype = "Сова";
+            return Chronotype.OWL;
         } else if (maxCount == countLarkSession && countOwlSession != countLarkSession) {
-            chronotype = "Жаворонок";
+            return Chronotype.LARK;
         } else {
-            chronotype = "Голубь";
+            return Chronotype.DOVE;
         }
+    }
 
-        return new SleepAnalysisResult("Хронотип пользователя", chronotype);
+    @Override
+    public SleepAnalysisResult apply(List<SleepingSession> sessions) {
+
+        List<SleepingSession> nightSessions = SleepingSession.getNightSessions(sessions);
+        List<SleepingSession> nightSessionsOwl = getSessionsOwl(nightSessions);
+        List<SleepingSession> nightSessionsLark = getSessionsLark(nightSessions);
+        List<SleepingSession> nightSessionsDove = getSessionsDove(nightSessions, nightSessionsOwl, nightSessionsLark);
+        Chronotype chronotype = getChronotype(nightSessionsOwl, nightSessionsLark, nightSessionsDove);
+        return new SleepAnalysisResult("Хронотип пользователя", chronotype.getDescription());
     }
 }

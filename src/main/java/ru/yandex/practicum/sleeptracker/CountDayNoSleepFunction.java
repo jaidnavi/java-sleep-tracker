@@ -21,14 +21,12 @@ public class CountDayNoSleepFunction implements Function<List<SleepingSession>, 
         LocalDateTime firstStart = sessions.get(0).getStartSession();
         LocalDateTime lastEnd = sessions.get(sessions.size() - 1).getEndSession().toLocalDate().atStartOfDay();
 
-
         LocalDateTime firstStartDate;
         if (firstStart.toLocalTime().isBefore(LocalTime.NOON)) {
             firstStartDate = firstStart.toLocalDate().minusDays(1).atStartOfDay();
         } else {
             firstStartDate = firstStart.toLocalDate().atStartOfDay();
         }
-
 
         Duration period = Duration.between(firstStartDate, lastEnd);
         long allDays = period.toDays();
