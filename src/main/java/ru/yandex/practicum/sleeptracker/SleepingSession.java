@@ -12,14 +12,14 @@ public class SleepingSession {
     private final LocalDateTime endSession;
     private final SleepQuality sleepQuality;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
-    private static final int COUNT_SEGMRNT = 3; // количество сегментов в строке сессии сна, через разделитель
+    private static final int COUNT_SEGMENT = 3; // количество сегментов в строке сессии сна, через разделитель
     private static final String SEPARATOR = ";"; // разделитель, для парсинга строки сессии сна на сегменты данных
     private static final int COUNT_SECONDS_IN_DAY = 24 * 60 * 60; // число секунд в дне, для ограничения длительности сессии сна
 
     public SleepingSession(String sleepingSession) throws SleepSessionErrors {
         String[] parts = sleepingSession.split(SEPARATOR);
 
-        if (parts.length == COUNT_SEGMRNT) {
+        if (parts.length == COUNT_SEGMENT) {
             try {
                 this.startSession = LocalDateTime.parse(parts[0], FORMATTER);
             } catch (DateTimeParseException e) {
@@ -41,7 +41,7 @@ public class SleepingSession {
             }
 
             if (Duration.between(this.startSession, this.endSession).toSeconds() >= COUNT_SECONDS_IN_DAY) {
-                throw new SleepSessionErrors("Период сна " + this.startSession + " - " + this.endSession + " должно быть меньше 24 часов");
+                throw new SleepSessionErrors("Период сна " + this.startSession + " - " + this.endSession + " должен быть меньше 24 часов");
             }
 
         } else {
